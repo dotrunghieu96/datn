@@ -21,9 +21,7 @@ SOURCES += \
         Media/mymediaapp.cpp \
         Media/mymediaplayer.cpp \
         Media/playlistmodel.cpp \
-        Media/radioapp.cpp \
         Media/song.cpp \
-        Radio/radioapp.cpp \
         main.cpp
 
 
@@ -46,9 +44,7 @@ HEADERS += \
     Media/mymediaapp.h \
     Media/mymediaplayer.h \
     Media/playlistmodel.h \
-    Media/radioapp.h \
-    Media/song.h \
-    Radio/radioapp.h
+    Media/song.h
 
 unix|win32: LIBS += -LD:/Libraries/taglib/lib/ -ltag
 

@@ -266,35 +266,6 @@ Item {
         color: "lightgray"
     }
 
-    Rectangle {
-        id: drawerSign
-        anchors.left: parent.left
-        anchors.leftMargin: 16
-        anchors.verticalCenter: parent.verticalCenter
-        width: 16
-        height: 256
-        radius: 8
-        color: "lightgray"
-
-        MouseArea {
-            anchors.fill: parent
-
-            hoverEnabled: true
-
-            onEntered: {
-                parent.color = "gray"
-            }
-
-            onExited: {
-                parent.color = "lightgray"
-            }
-
-            onClicked: {
-                playlistBrowser.open()
-            }
-        }
-    }
-
     Drawer {
         id: playlistBrowser
         width: parent.width * 0.3
@@ -586,47 +557,22 @@ Item {
         }
     }
 
-    RoundButton {
-        id: shuffleButton
-        width: nextButton.width
+    Button {
+        id: drawerButton
+        width: nextButton.width / 2
         height: width
         anchors.right: prevButton.left
-        anchors.rightMargin: 32
+        anchors.rightMargin: 64
         anchors.verticalCenter: playButton.verticalCenter
-
-//        enabled: false
 
         background: Image {
             id: bgShuffle
             anchors.fill: parent
-            source: {
-                if (controller.isShuffle)
-                {
-                    if (shuffleButton.pressed)
-                    {
-                        return "qrc:/Resources/shuffle_on_focus.png"
-                    }
-                    else
-                    {
-                        return "qrc:/Resources/shuffle_on_idle.png"
-                    }
-                }
-                else
-                {
-                    if (shuffleButton.pressed)
-                    {
-                        return "qrc:/Resources/shuffle_off_focus.png"
-                    }
-                    else
-                    {
-                        return "qrc:/Resources/shuffle_off_idle.png"
-                    }
-                }
-            }
+            source: "qrc:/Resources/playlist.png"
         }
 
         onClicked: {
-            controller.toggleShuffle()
+            playlistBrowser.open()
         }
     }
 

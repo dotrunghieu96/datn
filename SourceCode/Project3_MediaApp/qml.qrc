@@ -19,11 +19,8 @@
         <file>Resources/repeat_none_idle.png</file>
         <file>Resources/repeat_one_focus.png</file>
         <file>Resources/repeat_one_idle.png</file>
-        <file>Resources/shuffle_off_focus.png</file>
-        <file>Resources/shuffle_off_idle.png</file>
-        <file>Resources/shuffle_on_focus.png</file>
-        <file>Resources/shuffle_on_idle.png</file>
         <file>Resources/background.jpg</file>
         <file>FolderBrowser.qml</file>
+        <file>Resources/playlist.png</file>
     </qresource>
 </RCC>
