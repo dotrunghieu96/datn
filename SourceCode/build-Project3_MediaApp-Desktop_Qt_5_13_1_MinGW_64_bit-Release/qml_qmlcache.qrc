@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<RCC>
+    <qresource prefix="/">
+        <file alias="Resources/album_art.png">../Project3_MediaApp/Resources/album_art.png</file>
+        <file alias="Resources/next_focus.png">../Project3_MediaApp/Resources/next_focus.png</file>
+        <file alias="Resources/next_idle.png">../Project3_MediaApp/Resources/next_idle.png</file>
+        <file alias="Resources/pause_focus.png">../Project3_MediaApp/Resources/pause_focus.png</file>
+        <file alias="Resources/pause_idle.png">../Project3_MediaApp/Resources/pause_idle.png</file>
+        <file alias="Resources/play_focus.png">../Project3_MediaApp/Resources/play_focus.png</file>
+        <file alias="Resources/play_idle.png">../Project3_MediaApp/Resources/play_idle.png</file>
+        <file alias="Resources/prev_focus.png">../Project3_MediaApp/Resources/prev_focus.png</file>
+        <file alias="Resources/prev_idle.png">../Project3_MediaApp/Resources/prev_idle.png</file>
+        <file alias="Resources/repeat_all_focus.png">../Project3_MediaApp/Resources/repeat_all_focus.png</file>
+        <file alias="Resources/repeat_all_idle.png">../Project3_MediaApp/Resources/repeat_all_idle.png</file>
+        <file alias="Resources/repeat_none_focus.png">../Project3_MediaApp/Resources/repeat_none_focus.png</file>
+        <file alias="Resources/repeat_none_idle.png">../Project3_MediaApp/Resources/repeat_none_idle.png</file>
+        <file alias="Resources/repeat_one_focus.png">../Project3_MediaApp/Resources/repeat_one_focus.png</file>
+        <file alias="Resources/repeat_one_idle.png">../Project3_MediaApp/Resources/repeat_one_idle.png</file>
+        <file alias="Resources/shuffle_off_focus.png">../Project3_MediaApp/Resources/shuffle_off_focus.png</file>
+        <file alias="Resources/shuffle_off_idle.png">../Project3_MediaApp/Resources/shuffle_off_idle.png</file>
+        <file alias="Resources/shuffle_on_focus.png">../Project3_MediaApp/Resources/shuffle_on_focus.png</file>
+        <file alias="Resources/shuffle_on_idle.png">../Project3_MediaApp/Resources/shuffle_on_idle.png</file>
+        <file alias="Resources/background.jpg">../Project3_MediaApp/Resources/background.jpg</file>
+    </qresource>
+</RCC>
