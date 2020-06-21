@@ -21,6 +21,7 @@
         <file>Resources/repeat_one_idle.png</file>
         <file>Resources/background.jpg</file>
         <file>FolderBrowser.qml</file>
-        <file>Resources/playlist.png</file>
+        <file>Resources/playlist_focus.png</file>
+        <file>Resources/playlist_idle.png</file>
     </qresource>
 </RCC>

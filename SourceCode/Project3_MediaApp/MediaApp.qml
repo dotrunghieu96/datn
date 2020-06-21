@@ -568,7 +568,16 @@ Item {
         background: Image {
             id: bgShuffle
             anchors.fill: parent
-            source: "qrc:/Resources/playlist.png"
+            source: {
+                if (drawerButton.pressed)
+                {
+                    return "qrc:/Resources/playlist_focus.png"
+                }
+                else
+                {
+                    return "qrc:/Resources/playlist_idle.png"
+                }
+            }
         }
 
         onClicked: {

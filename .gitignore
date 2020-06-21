@@ -34,3 +34,4 @@
 *.cxxflags
 *.cflags
 # End of https://www.toptal.com/developers/gitignore/api/qtcreator
+*.user
