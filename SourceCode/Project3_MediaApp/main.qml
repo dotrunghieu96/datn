@@ -70,6 +70,7 @@ Window {
 
                     anchors.fill: mediaWidget
                     clip: true
+                    fillMode: Image.PreserveAspectFit
 
                     source: {
                         if (playlist.rowCount() > 0 && playlist.rowCount() >  controller.nowPlayingIndex)
