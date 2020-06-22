@@ -23,5 +23,7 @@
         <file>FolderBrowser.qml</file>
         <file>Resources/playlist_focus.png</file>
         <file>Resources/playlist_idle.png</file>
+        <file>VideoApp.qml</file>
+        <file>VideoPlayer.qml</file>
     </qresource>
 </RCC>

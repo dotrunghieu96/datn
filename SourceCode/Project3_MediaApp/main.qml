@@ -9,6 +9,7 @@ Window {
     height: 720
     flags: Qt.FramelessWindowHint
 
+
     Image {
         id: background
         anchors.fill: parent
@@ -37,6 +38,20 @@ Window {
         }
 
         initialItem: mainView
+    }
+
+    Button {
+        x: 0
+        y: 0
+        width: 80
+        height: 30
+
+        onClicked: {
+            stackView.push(videoApp)
+        }
+
+
+        text: "video"
     }
 
     Component {
@@ -315,6 +330,20 @@ Window {
                 onSaveClicked: {
                     appCore.saveDirectoriesAndReload()
                     stackView.push(appMediaComponent)
+                }
+            }
+        }
+    }
+
+    Component {
+        id: videoApp
+
+        Item {
+            VideoApp {
+                anchors.fill: parent
+
+                onBackClicked: {
+                    stackView.push(mainView)
                 }
             }
         }
