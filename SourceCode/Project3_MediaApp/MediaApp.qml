@@ -360,6 +360,7 @@ Item {
                         font.bold: true
                         font.family: "Helvetica"
                         font.pixelSize: 28
+                        fontSizeMode: Text.Fit
                         color: "white"
 
                         text: title
