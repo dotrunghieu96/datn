@@ -20,8 +20,8 @@ int main(int argc, char *argv[])
     fileSystemModel->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
 
     engine.rootContext()->setContextProperty("appCore", mediaApp);
-    engine.rootContext()->setContextProperty("controller", mediaApp->controller());
-    engine.rootContext()->setContextProperty("playlist", mediaApp->allMedias());
+    engine.rootContext()->setContextProperty("audioPlayer", mediaApp->audioPlayer());
+    engine.rootContext()->setContextProperty("playlist", mediaApp->allAudios());
     engine.rootContext()->setContextProperty("directories", mediaApp->mediaDirModel());
 
     engine.rootContext()->setContextProperty("fileSystemModel", fileSystemModel);

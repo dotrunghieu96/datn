@@ -11,7 +11,8 @@
 
 #include "mediadirmodel.h"
 #include "playlistmodel.h"
-#include "mymediaplayer.h"
+#include "videoplaylistmodel.h"
+#include "myaudioplayer.h"
 
 #include <taglib/tag.h>
 #include <taglib/fileref.h>
@@ -33,8 +34,9 @@ public:
     explicit MyMediaApp(QObject *parent = nullptr);
 
     MediaDirModel *mediaDirModel() const;
-    PlaylistModel *allMedias() const;
-    MyMediaPlayer *controller() const;
+    PlaylistModel *allAudios() const;
+    VideoPlaylistModel *allVideos() const;
+    MyAudioPlayer *audioPlayer() const;
 
 public slots:
     void saveDirectoriesAndReload();
@@ -48,7 +50,9 @@ private:
     QString getAlbumArt(QUrl url);
 
 private:
-    PlaylistModel *m_allMedias = nullptr;
+    PlaylistModel *m_allAudios = nullptr;
+
+    VideoPlaylistModel *m_allVideos = nullptr;
 
     //the directories model to interact with on gui
     MediaDirModel *m_mediaDirModel = nullptr;
@@ -56,7 +60,7 @@ private:
     //the actual directories list
     QList<MediaDir> *m_actualDir = nullptr;
 
-    MyMediaPlayer *m_controller = nullptr;
+    MyAudioPlayer *m_audioPlayer = nullptr;
 
 
 };

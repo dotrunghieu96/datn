@@ -1,25 +1,25 @@
-#include "mymediaplayer.h"
+#include "myaudioplayer.h"
 
-MyMediaPlayer::MyMediaPlayer(QObject *parent) : QObject(parent)
+MyAudioPlayer::MyAudioPlayer(QObject *parent) : QObject(parent)
 {
     m_player = new QMediaPlayer();
     m_playlist = new QMediaPlaylist();
     m_player->setPlaylist(m_playlist);
 
     QObject::connect(m_player, &QMediaPlayer::positionChanged,
-                     this, &MyMediaPlayer::setPosition);
+                     this, &MyAudioPlayer::setPosition);
 
     QObject::connect(m_player, &QMediaPlayer::durationChanged,
-                     this, &MyMediaPlayer::setDuration);
+                     this, &MyAudioPlayer::setDuration);
 
     QObject::connect(m_player, &QMediaPlayer::currentMediaChanged,
-                     this, &MyMediaPlayer::mediaChangedHandler);
+                     this, &MyAudioPlayer::mediaChangedHandler);
 
     m_isShuffle = false;
     m_playbackMode = SEQUENCE;
 }
 
-void MyMediaPlayer::switchPlaybackMode()
+void MyAudioPlayer::switchPlaybackMode()
 {
     switch (m_playbackMode) {
     case SEQUENCE:
@@ -37,7 +37,7 @@ void MyMediaPlayer::switchPlaybackMode()
     }
 }
 
-void MyMediaPlayer::setMedia(const int &index)
+void MyAudioPlayer::setMedia(const int &index)
 {
     if (m_playlist->mediaCount() > 0)
     {
@@ -54,7 +54,7 @@ void MyMediaPlayer::setMedia(const int &index)
     }
 }
 
-void MyMediaPlayer::togglePlay()
+void MyAudioPlayer::togglePlay()
 {
     switch (m_player->state()) {
     case QMediaPlayer::PausedState:
@@ -69,7 +69,7 @@ void MyMediaPlayer::togglePlay()
     }
 }
 
-void MyMediaPlayer::next()
+void MyAudioPlayer::next()
 {
     if (m_playlist->mediaCount() > 0)
     {
@@ -91,7 +91,7 @@ void MyMediaPlayer::next()
     }
 }
 
-void MyMediaPlayer::previous()
+void MyAudioPlayer::previous()
 {
     if (m_playlist->mediaCount() > 0)
     {
@@ -113,7 +113,7 @@ void MyMediaPlayer::previous()
     }
 }
 
-void MyMediaPlayer::setPlaybackMode(const PlaybackMode &playbackMode)
+void MyAudioPlayer::setPlaybackMode(const PlaybackMode &playbackMode)
 {
     if (m_playbackMode != playbackMode)
     {
@@ -122,7 +122,7 @@ void MyMediaPlayer::setPlaybackMode(const PlaybackMode &playbackMode)
     }
 }
 
-void MyMediaPlayer::loadPlaylist()
+void MyAudioPlayer::loadPlaylist()
 {
     m_playlist->clear();
     if (m_originalPlaylist != nullptr && m_playlist != nullptr)
@@ -148,49 +148,49 @@ void MyMediaPlayer::loadPlaylist()
     }
 }
 
-int MyMediaPlayer::playbackMode() const
+int MyAudioPlayer::playbackMode() const
 {
     return QVariant(m_playbackMode).toInt();
 }
 
-bool MyMediaPlayer::isShuffle() const
+bool MyAudioPlayer::isShuffle() const
 {
     return m_isShuffle;
 }
 
-void MyMediaPlayer::setIsPlaying(bool isPlaying)
+void MyAudioPlayer::setIsPlaying(bool isPlaying)
 {
     m_isPlaying = isPlaying;
     emit isPlayingChanged(m_isPlaying);
 }
 
-bool MyMediaPlayer::isPlaying() const
+bool MyAudioPlayer::isPlaying() const
 {
     return m_isPlaying;
 }
 
-int MyMediaPlayer::nowPlayingIndex() const
+int MyAudioPlayer::nowPlayingIndex() const
 {
     return m_nowPlayingIndex;
 }
 
-bool MyMediaPlayer::mediaAvailable() const
+bool MyAudioPlayer::mediaAvailable() const
 {
     return m_mediaAvailable;
 }
 
-void MyMediaPlayer::setMediaAvailable(bool mediaAvailable)
+void MyAudioPlayer::setMediaAvailable(bool mediaAvailable)
 {
     m_mediaAvailable = mediaAvailable;
     emit mediaAvailableChanged(m_mediaAvailable);
 }
 
-qint64 MyMediaPlayer::position() const
+qint64 MyAudioPlayer::position() const
 {
     return m_position;
 }
 
-QString MyMediaPlayer::getTimeString(qint64 miliseconds)
+QString MyAudioPlayer::getTimeString(qint64 miliseconds)
 {
     QString timeString = "00:00";
     miliseconds = miliseconds/1000;
@@ -203,7 +203,7 @@ QString MyMediaPlayer::getTimeString(qint64 miliseconds)
     return timeString;
 }
 
-void MyMediaPlayer::mediaChangedHandler()
+void MyAudioPlayer::mediaChangedHandler()
 {
     bool triggerAnimationDirection = true;
     if (m_playlist->mediaCount() > 0)
@@ -234,24 +234,24 @@ void MyMediaPlayer::mediaChangedHandler()
     emit nowPlayingIndexChanged(m_nowPlayingIndex);
 }
 
-void MyMediaPlayer::setPosition(const qint64 &position)
+void MyAudioPlayer::setPosition(const qint64 &position)
 {
     m_position = position;
     emit positionChanged(m_position);
 }
 
-void MyMediaPlayer::setPositionByPercent(const int &percent)
+void MyAudioPlayer::setPositionByPercent(const int &percent)
 {
     m_player->setPosition(percent * m_player->duration() / 100);
 }
 
-void MyMediaPlayer::setDuration(const qint64 &duration)
+void MyAudioPlayer::setDuration(const qint64 &duration)
 {
     m_duration = duration;
     emit durationChanged(m_duration);
 }
 
-void MyMediaPlayer::toggleShuffle()
+void MyAudioPlayer::toggleShuffle()
 {
     //TO-DO: a solution for shuffle
     if (m_isShuffle == false) {
@@ -264,7 +264,7 @@ void MyMediaPlayer::toggleShuffle()
     emit shuffleChanged(m_isShuffle);
 }
 
-void MyMediaPlayer::setOriginalPlaylist(PlaylistModel *originalPlaylist)
+void MyAudioPlayer::setOriginalPlaylist(PlaylistModel *originalPlaylist)
 {
     if (m_originalPlaylist != originalPlaylist)
     {
@@ -279,12 +279,12 @@ void MyMediaPlayer::setOriginalPlaylist(PlaylistModel *originalPlaylist)
     }
 }
 
-void MyMediaPlayer::stopMedia()
+void MyAudioPlayer::stopMedia()
 {
     m_player->stop();
 }
 
-qint64 MyMediaPlayer::duration() const
+qint64 MyAudioPlayer::duration() const
 {
     return m_duration;
 }

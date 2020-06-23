@@ -16,6 +16,11 @@ bool MediaDir::enableStatus() const
     return m_enableStatus;
 }
 
+MediaDir::DirType MediaDir::dirType() const
+{
+    return m_dirType;
+}
+
 void MediaDir::setEnableStatus(bool enableStatus)
 {
     m_enableStatus = enableStatus;

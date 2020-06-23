@@ -2,9 +2,9 @@
 
 MyMediaApp::MyMediaApp(QObject *parent) : QObject(parent)
 {
-    m_controller = new MyMediaPlayer();
+    m_audioPlayer = new MyAudioPlayer();
     m_mediaDirModel = new MediaDirModel();
-    m_allMedias = new PlaylistModel();
+    m_allAudios = new PlaylistModel();
     m_actualDir = new QList<MediaDir>();
 
     //load media from selected directories
@@ -17,14 +17,19 @@ MediaDirModel *MyMediaApp::mediaDirModel() const
     return m_mediaDirModel;
 }
 
-PlaylistModel *MyMediaApp::allMedias() const
+PlaylistModel *MyMediaApp::allAudios() const
 {
-    return m_allMedias;
+    return m_allAudios;
 }
 
-MyMediaPlayer *MyMediaApp::controller() const
+VideoPlaylistModel *MyMediaApp::allVideos() const
 {
-    return m_controller;
+    return m_allVideos;
+}
+
+MyAudioPlayer *MyMediaApp::audioPlayer() const
+{
+    return m_audioPlayer;
 }
 
 void MyMediaApp::saveDirectoriesAndReload()
@@ -33,7 +38,7 @@ void MyMediaApp::saveDirectoriesAndReload()
     writeDirectoriesInfoToFile();
 
     //Stop the current media player
-    m_controller->stopMedia();
+    m_audioPlayer->stopMedia();
 
     //reload media from recently saved directories
     readDirectoriesInfoFromFile();
@@ -53,7 +58,7 @@ void MyMediaApp::resetMediaDirList()
 
 void MyMediaApp::scanMedias()
 {
-    m_allMedias->clearData();
+    m_allAudios->clearData();
 
     QList<QUrl> urls;
     for (int i = 0; i < m_mediaDirModel->rowCount(); i++)
@@ -72,7 +77,7 @@ void MyMediaApp::scanMedias()
         }
     }
     addToPlaylist(urls);
-    m_controller->setOriginalPlaylist(m_allMedias);
+    m_audioPlayer->setOriginalPlaylist(m_allAudios);
 }
 
 void MyMediaApp::readDirectoriesInfoFromFile()
@@ -190,9 +195,9 @@ void MyMediaApp::addToPlaylist(const QList<QUrl> &urls)
                   singer,
                   url.toDisplayString(),
                   getAlbumArt(url));
-        m_allMedias->addSong(song);
+        m_allAudios->addSong(song);
     }
-    m_controller->setOriginalPlaylist(m_allMedias);
+    m_audioPlayer->setOriginalPlaylist(m_allAudios);
 }
 
 QString MyMediaApp::getAlbumArt(QUrl url)

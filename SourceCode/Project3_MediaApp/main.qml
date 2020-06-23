@@ -88,8 +88,8 @@ Window {
                     fillMode: Image.PreserveAspectFit
 
                     source: {
-                        if (playlist.rowCount() > 0 && playlist.rowCount() >  controller.nowPlayingIndex)
-                            return playlist.data(playlist.index(controller.nowPlayingIndex, 0), 260)
+                        if (playlist.rowCount() > 0 && playlist.rowCount() >  audioPlayer.nowPlayingIndex)
+                            return playlist.data(playlist.index(audioPlayer.nowPlayingIndex, 0), 260)
                         else
                             return "qrc:/Resources/album_art.png"
                     }
@@ -119,7 +119,7 @@ Window {
                     anchors.leftMargin: 32
                     width: parent.width - 64
 
-                    text: playlist.data(playlist.index(controller.nowPlayingIndex, 0), 257)
+                    text: playlist.data(playlist.index(audioPlayer.nowPlayingIndex, 0), 257)
                     clip: true
 
                     font.family: "Helvetica"
@@ -135,7 +135,7 @@ Window {
                     anchors.left: currentSongTitle.left
                     anchors.right: currentSongTitle.right
 
-                    text: playlist.data(playlist.index(controller.nowPlayingIndex, 0), 258)
+                    text: playlist.data(playlist.index(audioPlayer.nowPlayingIndex, 0), 258)
                     clip: true
 
                     font.family: "Helvetica"
@@ -157,13 +157,13 @@ Window {
                     width: 160
                     height: width
 
-                    enabled: controller.mediaAvailable
+                    enabled: audioPlayer.mediaAvailable
 
                     background: Image {
                         id: bgPlay
                         anchors.fill: parent
                         source: {
-                            if (controller.isPlaying)
+                            if (audioPlayer.isPlaying)
                             {
                                 if (playButton.pressed)
                                 {
@@ -188,7 +188,7 @@ Window {
                         }
                     }
                     onClicked: {
-                        controller.togglePlay()
+                        audioPlayer.togglePlay()
                     }
 
                 }
@@ -202,7 +202,7 @@ Window {
                     width: 128
                     height: width
 
-                    enabled: controller.mediaAvailable
+                    enabled: audioPlayer.mediaAvailable
 
                     background: Image {
                         id: bgNext
@@ -219,7 +219,7 @@ Window {
                         }
                     }
                     onClicked: {
-                        controller.next()
+                        audioPlayer.next()
                     }
                 }
 
@@ -232,7 +232,7 @@ Window {
                     width: nextButton.width
                     height: width
 
-                    enabled: controller.mediaAvailable
+                    enabled: audioPlayer.mediaAvailable
 
                     background: Image {
                         id: bgPrev
@@ -250,7 +250,7 @@ Window {
                     }
 
                     onClicked: {
-                        controller.previous()
+                        audioPlayer.previous()
                     }
                 }
             }
@@ -300,7 +300,7 @@ Window {
         id: appMediaComponent
 
         Item {
-            MediaApp {
+            AudioPlayer {
                 id: appMedia
                 anchors.fill: parent
 

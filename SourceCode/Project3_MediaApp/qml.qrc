@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>MediaApp.qml</file>
+        <file>AudioPlayer.qml</file>
         <file>MediaAppSetting.qml</file>
         <file>Resources/album_art.png</file>
         <file>MyButton.qml</file>
@@ -25,5 +25,7 @@
         <file>Resources/playlist_idle.png</file>
         <file>VideoApp.qml</file>
         <file>VideoPlayer.qml</file>
+        <file>Resources/video_thumbnail.png</file>
+        <file>MediaApp.qml</file>
     </qresource>
 </RCC>

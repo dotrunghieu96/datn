@@ -15,7 +15,7 @@ enum PlaybackMode {
     REPEAT_ONE
 };
 
-class MyMediaPlayer : public QObject
+class MyAudioPlayer : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
@@ -27,7 +27,7 @@ class MyMediaPlayer : public QObject
     Q_PROPERTY(int playbackMode READ playbackMode NOTIFY playbackModeChanged)
 
 public:
-    explicit MyMediaPlayer(QObject *parent = nullptr);
+    explicit MyAudioPlayer(QObject *parent = nullptr);
     void setOriginalPlaylist(PlaylistModel *originalPlaylist);
     void stopMedia();
 
