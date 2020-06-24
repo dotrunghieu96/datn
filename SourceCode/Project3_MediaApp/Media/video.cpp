@@ -3,7 +3,7 @@
 Video::Video(QString title, QString source)
 {
     m_title = title;
-    m_source = source;
+    m_videoSrc = source;
 }
 
 QString Video::title() const
@@ -11,7 +11,7 @@ QString Video::title() const
     return m_title;
 }
 
-QString Video::source() const
+QString Video::videoSrc() const
 {
-    return m_source;
+    return m_videoSrc;
 }

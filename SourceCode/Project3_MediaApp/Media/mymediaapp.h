@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -46,7 +47,8 @@ private:
     void scanMedias();
     void readDirectoriesInfoFromFile();
     void writeDirectoriesInfoToFile();
-    void addToPlaylist(const QList<QUrl> &urls);
+    void addToAudioPlaylist(const QList<QUrl> &urls);
+    void addToVideoPlaylist(const QList<QUrl> &urls);
     QString getAlbumArt(QUrl url);
 
 private:

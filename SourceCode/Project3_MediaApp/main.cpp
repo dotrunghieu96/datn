@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("appCore", mediaApp);
     engine.rootContext()->setContextProperty("audioPlayer", mediaApp->audioPlayer());
     engine.rootContext()->setContextProperty("playlist", mediaApp->allAudios());
+    engine.rootContext()->setContextProperty("videoPlaylist", mediaApp->allVideos());
     engine.rootContext()->setContextProperty("directories", mediaApp->mediaDirModel());
 
     engine.rootContext()->setContextProperty("fileSystemModel", fileSystemModel);

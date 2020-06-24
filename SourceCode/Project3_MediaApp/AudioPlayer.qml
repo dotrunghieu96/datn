@@ -331,9 +331,7 @@ Item {
                 id: mediaList
                 anchors.fill: parent
                 anchors.topMargin: 96
-                anchors.leftMargin: 16
                 anchors.bottomMargin: 96
-                anchors.rightMargin: 16
 
                 clip: true
 
@@ -344,6 +342,8 @@ Item {
                     id: mediaItem
                     width: mediaList.width
                     height: mediaList.height / 6
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
                     color: "black"
 
                     Text {
@@ -416,10 +416,34 @@ Item {
                         }
                     }
 
+                    LinearGradient {
+                        id: mask
+                        anchors.fill: parent
+                        visible: false
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: "green"}
+                            GradientStop { position: 0.2; color: "transparent"}
+                            GradientStop { position: 0.8; color: "transparent"}
+                            GradientStop { position: 1.0; color: "green" }
+                        }
+                    }
+
                     MouseArea {
                         anchors.fill: mediaItem
 
                         hoverEnabled: true
+
+                        onPressed: {
+                            mask.visible = true
+                        }
+
+                        onCanceled: {
+                            mask.visible = false
+                        }
+
+                        onReleased: {
+                            mask.visible = false
+                        }
 
                         onClicked: {
                             mediaList.currentIndex = index

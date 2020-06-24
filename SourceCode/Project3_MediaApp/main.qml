@@ -50,7 +50,6 @@ Window {
             stackView.push(videoApp)
         }
 
-
         text: "video"
     }
 
@@ -146,6 +145,19 @@ Window {
                 MouseArea {
                     id:openMediaApp
                     anchors.fill: parent
+
+                    onPressed: {
+                        parent.opacity = 0.7
+                    }
+
+                    onReleased: {
+                        parent.opacity = 1
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 1
+                    }
+
                     onClicked: {
                         stackView.push(appMediaComponent)
                     }

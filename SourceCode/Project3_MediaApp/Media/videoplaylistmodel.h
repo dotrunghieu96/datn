@@ -11,14 +11,14 @@ class VideoPlaylistModel : public QAbstractListModel
 public:
     enum Roles {
         TitleRole = Qt::UserRole + 1,
-        SourceRole
+        VideoSrcRole
     };
 
     explicit VideoPlaylistModel(QObject *parent = nullptr);
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    void addSong(Video &video);
+    void addVideo(Video &video);
 
     void clearData();
 

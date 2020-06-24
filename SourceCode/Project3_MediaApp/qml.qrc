@@ -27,5 +27,6 @@
         <file>VideoPlayer.qml</file>
         <file>Resources/video_thumbnail.png</file>
         <file>MediaApp.qml</file>
+        <file>Resources/video_state_pause.png</file>
     </qresource>
 </RCC>

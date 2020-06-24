@@ -27,29 +27,29 @@ Item {
     }
 
 
-    ListModel {
-        id: videoPlaylist
+//    ListModel {
+//        id: videoPlaylist
 
-        ListElement {
-            source: "C:/Users/dotru/Videos/Captures/Hollow_Knight.mp4"
-            title: "Hollow Knight"
-        }
+//        ListElement {
+//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight.mp4"
+//            title: "Hollow Knight"
+//        }
 
-        ListElement {
-            source: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy.mp4"
-            title: "Hollow Knight"
-        }
+//        ListElement {
+//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy.mp4"
+//            title: "Hollow Knight"
+//        }
 
-        ListElement {
-            source: "C:/Users/dotru/Videos/Captures/Hollow_Knight.mp4"
-            title: "Hollow Knight"
-        }
+//        ListElement {
+//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy_1.mp4"
+//            title: "Hollow Knight"
+//        }
 
-        ListElement {
-            source: "C:/Users/dotru/Videos/Captures/Hollow_Knight.mp4"
-            title: "Hollow Knight"
-        }
-    }
+//        ListElement {
+//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy_2.mp4"
+//            title: "Hollow Knight"
+//        }
+//    }
 
     Rectangle {
         id: videoGrid
@@ -64,8 +64,9 @@ Item {
         Component {
             id: videoDelegate
             Item {
-                width: grid.cellWidth
-                height: grid.cellHeight
+                id: delegateItem
+                width: 384
+                height: 280
 
                 Rectangle {
                     id: thumbnail
@@ -75,40 +76,39 @@ Item {
                     height: 216
                     radius: 5
 
+                    color: "transparent"
+
                     Image {
                         anchors.fill: parent
                         source: "qrc:/Resources/video_thumbnail.png"
 
-                        OpacityMask {
-                            source: mask
-                            maskSource: thumbnail
-                        }
-
-                        LinearGradient {
-                            id: mask
-                            anchors.fill: parent
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: "transparent"}
-                                GradientStop { position: 1.0; color: "black" }
-                            }
-                        }
-
                         TapHandler {
                             acceptedDevices: PointerDevice.TouchScreen
                             onTapped: {
-                                console.log("tapped")
-                                backButton.visible = false
+                                player.videoSource = videoSrc
+                                backButton.enabled = false
                                 videoGrid.enabled = false
-                                player.videoSource = source
-                                player.play()
+                                slideIn.restart()
                             }
                         }
 
-
                         MouseArea {
                             anchors.fill: parent
+
+                            onPressed: {
+                                thumbnail.opacity = 0.7
+                            }
+
+                            onReleased: {
+                                thumbnail.opacity = 1
+                            }
+
+                            onCanceled: {
+                                thumbnail.opacity = 1
+                            }
+
                             onClicked: {
-                                player.videoSource = source
+                                player.videoSource = videoSrc
                                 backButton.enabled = false
                                 videoGrid.enabled = false
                                 slideIn.restart()
@@ -120,16 +120,38 @@ Item {
 
                 Text {
                     text: title
-                    height: 36
+                    height: 48
+                    width: thumbnail.width
                     anchors.left: parent.left
                     anchors.leftMargin: 4
-                    anchors.bottom: thumbnail.bottom
-                    anchors.bottomMargin: 4
+                    anchors.top: thumbnail.bottom
+                    anchors.topMargin: 4
                     font.bold: true
                     font.family: "Helvetica"
                     font.pixelSize: 28
                     fontSizeMode: Text.Fit
                     color: "white"
+                }
+
+                Image {
+                    id: playingState
+                    height: 36
+                    width: 36
+                    anchors.right: thumbnail.right
+                    anchors.top: thumbnail.bottom
+                    anchors.topMargin: 4
+
+                    source: {
+                        if (player.videoSource == videoSrc
+                            && player.isPausing == true)
+                        {
+                            return "qrc:/Resources/video_state_pause.png"
+                        }
+                        else
+                        {
+                            return ""
+                        }
+                    }
                 }
 
             }
@@ -139,7 +161,7 @@ Item {
             id: grid
             anchors.fill: parent
             cellWidth: 416
-            cellHeight: 260
+            cellHeight: 280
             clip: true
             model: videoPlaylist
             delegate: videoDelegate
@@ -194,12 +216,11 @@ Item {
             }
 
             onBackClicked: {
-                player.stop()
                 slideOut.restart()
             }
 
             onVideoStopped: {
-                slideOut.restart()
+                console.log("video stopped")
             }
         }
     }

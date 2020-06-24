@@ -5,6 +5,7 @@ MyMediaApp::MyMediaApp(QObject *parent) : QObject(parent)
     m_audioPlayer = new MyAudioPlayer();
     m_mediaDirModel = new MediaDirModel();
     m_allAudios = new PlaylistModel();
+    m_allVideos = new VideoPlaylistModel();
     m_actualDir = new QList<MediaDir>();
 
     //load media from selected directories
@@ -60,23 +61,37 @@ void MyMediaApp::scanMedias()
 {
     m_allAudios->clearData();
 
-    QList<QUrl> urls;
+    QList<QUrl> audioUrls;
+    QList<QUrl> videoUrls;
+    QStringList fileFilter;
+    fileFilter << "*.mp3";
+    fileFilter << "*.mp4";
     for (int i = 0; i < m_mediaDirModel->rowCount(); i++)
     {
         if (m_mediaDirModel->data(m_mediaDirModel->index(i),
                                   MediaDirModel::EnableStatusRole).toBool())
         {
-            QDir directory(m_mediaDirModel->data(m_mediaDirModel->index(i),
-                                                 MediaDirModel::SourceDirRole).toString());
-            QFileInfoList musics = directory.entryInfoList(QStringList() << "*.mp3",QDir::Files);
-
-            for (int i = 0; i < musics.length(); i++)
+            QDirIterator it(m_mediaDirModel->data(m_mediaDirModel->index(i),
+                                                  MediaDirModel::SourceDirRole).toString(),
+                            fileFilter,
+                            QDir::Files,
+                            QDirIterator::Subdirectories);
+            while (it.hasNext())
             {
-                urls.append(QUrl::fromLocalFile(musics[i].absoluteFilePath()));
+                it.next();
+                if (it.filePath().endsWith("mp3"))
+                {
+                    audioUrls.append(QUrl::fromLocalFile(it.filePath()));
+                }
+                else
+                {
+                    videoUrls.append(QUrl::fromLocalFile(it.filePath()));
+                }
             }
         }
     }
-    addToPlaylist(urls);
+    addToAudioPlaylist(audioUrls);
+    addToVideoPlaylist(videoUrls);
     m_audioPlayer->setOriginalPlaylist(m_allAudios);
 }
 
@@ -177,7 +192,7 @@ void MyMediaApp::writeDirectoriesInfoToFile()
     //If failed to open file, ignore write attemp
 }
 
-void MyMediaApp::addToPlaylist(const QList<QUrl> &urls)
+void MyMediaApp::addToAudioPlaylist(const QList<QUrl> &urls)
 {
     for (auto &url: urls)
     {
@@ -198,6 +213,17 @@ void MyMediaApp::addToPlaylist(const QList<QUrl> &urls)
         m_allAudios->addSong(song);
     }
     m_audioPlayer->setOriginalPlaylist(m_allAudios);
+}
+
+void MyMediaApp::addToVideoPlaylist(const QList<QUrl> &urls)
+{
+    for (auto &url: urls)
+    {
+        QString title = url.fileName().replace(".mp4","");
+        QString videoSrc = url.toDisplayString();
+        Video video(title, videoSrc);
+        m_allVideos->addVideo(video);
+    }
 }
 
 QString MyMediaApp::getAlbumArt(QUrl url)

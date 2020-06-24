@@ -6,13 +6,13 @@
 class Video
 {
 public:
-    Video(QString title, QString source);
+    Video(QString title, QString videoSrc);
     QString title() const;
-    QString source() const;
+    QString videoSrc() const;
 
 private:
     QString m_title;
-    QString m_source;
+    QString m_videoSrc;
 };
 
 #endif // VIDEO_H

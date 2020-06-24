@@ -19,12 +19,12 @@ QVariant VideoPlaylistModel::data(const QModelIndex &index, int role) const
     const Video &song = m_data[index.row()];
     if (role == TitleRole)
         return song.title();
-    else if (role == SourceRole)
-        return song.source();
+    else if (role == VideoSrcRole)
+        return song.videoSrc();
     return QVariant();
 }
 
-void VideoPlaylistModel::addSong(Video &video)
+void VideoPlaylistModel::addVideo(Video &video)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_data << video;
@@ -40,6 +40,6 @@ QHash<int, QByteArray> VideoPlaylistModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[TitleRole] = "title";
-    roles[SourceRole] = "source";
+    roles[VideoSrcRole] = "videoSrc";
     return roles;
 }
