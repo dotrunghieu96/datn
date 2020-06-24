@@ -28,5 +28,8 @@
         <file>Qml/MyButton.qml</file>
         <file>Qml/VideoApp.qml</file>
         <file>Qml/VideoPlayer.qml</file>
+        <file>Qml/FileBrowser.qml</file>
+        <file>Resources/folder.png</file>
+        <file>Resources/up.png</file>
     </qresource>
 </RCC>

@@ -150,7 +150,7 @@ Item {
         id: folderDialog
         x: 320
         y: 140
-        source: "qrc:/FolderBrowser.qml"
+        source: "qrc:/Qml/FolderBrowser.qml"
         active: false
     }
 
