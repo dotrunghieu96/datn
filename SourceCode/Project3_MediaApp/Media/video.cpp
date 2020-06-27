@@ -1,9 +1,10 @@
 #include "video.h"
 
-Video::Video(QString title, QString source)
+Video::Video(QString title, QString source, QString thumbnailSource)
 {
     m_title = title;
     m_videoSrc = source;
+    m_thumbnailSource = thumbnailSource;
 }
 
 QString Video::title() const
@@ -14,4 +15,9 @@ QString Video::title() const
 QString Video::videoSrc() const
 {
     return m_videoSrc;
+}
+
+QString Video::thumbnailSource() const
+{
+    return m_thumbnailSource;
 }

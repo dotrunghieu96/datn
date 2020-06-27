@@ -23,6 +23,13 @@ Item {
         }
     }
 
+    DateTimeWidget {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 16
+        anchors.rightMargin: 16
+    }
+
     ListModel {
         id: pathViewModel
         ListElement {
@@ -39,6 +46,8 @@ Item {
     Rectangle {
         id: pathViewArea
         anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 32
         anchors.bottom: currentSongTitle.bottom
         anchors.bottomMargin: 64
         height: 336
@@ -338,6 +347,13 @@ Item {
                 currentIndex: -1
 
                 model: playlist
+
+                ScrollBar.vertical: ScrollBar {
+                    id: vBar
+                    height: parent.height
+                    interactive: false
+                }
+
                 delegate: Rectangle {
                     id: mediaItem
                     width: mediaList.width
@@ -356,10 +372,11 @@ Item {
 
                         clip: true
                         verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.WordWrap
 
                         font.bold: true
                         font.family: "Helvetica"
-                        font.pixelSize: 28
+                        font.pixelSize: 24
                         fontSizeMode: Text.Fit
                         color: "white"
 
@@ -372,14 +389,13 @@ Item {
                         anchors.top: titleText.bottom
                         anchors.left: titleText.left
                         anchors.right: titleText.right
-                        height: mediaItem.height / 2
 
                         clip: true
                         wrapMode: Text.WordWrap
                         verticalAlignment: Text.AlignTop
 
                         font.family: "Helvetica"
-                        font.pixelSize: 18
+                        font.pixelSize: 16
                         color: "lightgray"
 
                         text: singer
@@ -450,24 +466,6 @@ Item {
                             audioPlayer.setMedia(index)
                         }
                     }
-                }
-            }
-
-            MyButton {
-                id: settingButton
-                anchors.bottom: parent.bottom
-                anchors.right: parent.right
-                anchors.bottomMargin: 16
-                anchors.rightMargin:16
-                width: 160
-                height: 48
-
-                buttonText: "SETTING"
-
-                onButtonClicked: {
-                    playlistBrowser.close()
-                    playlistBrowser.interactive = false
-                    settingClicked()
                 }
             }
         }

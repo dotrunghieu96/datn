@@ -6,35 +6,79 @@ import QtGraphicalEffects 1.13
 Item {
     id: root
     property string videoSource
-    property bool isLongPressLeft: false
-    property bool isLongPressright: false
+    property int startPosition: 0
     property bool isPausing: video.playbackState == MediaPlayer.PausedState
+    property int countDown: 5
 
-    signal videoStopped()
+    signal nextVideo()
     signal backClicked()
+    signal prevVideo()
+
+    onVideoSourceChanged: {
+        video.source = videoSource
+        videoPlaylist.setNowPlayingIndex(videoSource)
+    }
 
     Rectangle {
         anchors.fill: parent
         color: "transparent"
         Video {
             id: video
-            source: videoSource
             anchors.fill: parent
-            onStopped: {
-                videoStopped()
-            }
             onPlaybackStateChanged: {
-                console.log(playbackState)
                 isPausing = video.playbackState == MediaPlayer.PausedState
-                console.log(isPausing)
+                if (video.playbackState == MediaPlayer.StoppedState)
+                {
+                    controlFade.stop()
+                    countDown = 5
+                    nextVideoTimer.start()
+                }
+                controlTimer.restart()
             }
         }
     }
+
+    Timer {
+        id: nextVideoTimer
+        repeat: countDown != 0
+        interval: 1000
+        triggeredOnStart: false
+
+        onTriggered: {
+            if (countDown != 0)
+            {
+                countDownText.text = "Next video in " + countDown
+                countDown--
+            }
+            else
+            {
+                nextVideo()
+            }
+        }
+
+    }
+
 
     Rectangle {
         id: controlWidget
         anchors.fill: parent
         color: "transparent"
+
+        Text {
+            id: videoName
+            anchors.top: parent.top
+            anchors.topMargin: 24
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 512
+            height: 48
+            text: mediaPlaybackInfo.lastVideoName
+            color: "white"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            font.pixelSize: 26
+            font.bold: true
+        }
 
         Timer {
             id: controlTimer
@@ -42,8 +86,24 @@ Item {
             repeat: false
             triggeredOnStart: false
             onTriggered: {
-                controlFade.restart()
+                if (video.playbackState == MediaPlayer.PlayingState)
+                {
+                    controlFade.restart()
+                }
             }
+        }
+
+        Text {
+            id: countDownText
+            anchors.horizontalCenter: playButton.horizontalCenter
+            anchors.top: playButton.bottom
+            anchors.topMargin: 32
+
+            color: "white"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            font.pixelSize: 26
         }
 
         NumberAnimation {
@@ -70,14 +130,23 @@ Item {
             buttonText: "BACK"
 
             onButtonClicked: {
+                if (video.position != video.duration)
+                {
+                    mediaPlaybackInfo.setLastVideoPosition(video.position * 100 / video.duration)
+                }
+                else
+                {
+                    mediaPlaybackInfo.setLastVideoPosition(0)
+                }
+                backClicked()
+                nextVideoTimer.stop()
+                countDownText.text = ""
                 video.pause()
-                console.log("pausing: " + isPausing)
                 controlFade.stop()
                 controlWidget.opacity = 1
-                controlWidget.enabled = true
+                controlWidget.enabled = false
                 controlTimer.restart()
                 controlTimer.stop()
-                backClicked()
             }
         }
 
@@ -102,7 +171,7 @@ Item {
                             return "qrc:/Resources/pause_idle.png"
                         }
                     }
-                    else
+                    else if (video.playbackState == MediaPlayer.PausedState)
                     {
                         if (playButton.pressed)
                         {
@@ -113,6 +182,17 @@ Item {
                             return "qrc:/Resources/play_idle.png"
                         }
                     }
+                    else
+                    {
+                        if (playButton.pressed)
+                        {
+                            return "qrc:/Resources/replay_focus.png"
+                        }
+                        else
+                        {
+                            return "qrc:/Resources/replay_idle.png"
+                        }
+                    }
                 }
             }
 
@@ -121,12 +201,77 @@ Item {
                 {
                     video.pause()
                 }
+                else if (video.playbackState == MediaPlayer.PausedState)
+                {
+                    video.play()
+                }
                 else
                 {
+                    nextVideoTimer.stop()
+                    countDownText.text = ""
+                    video.seek(0)
                     video.play()
                 }
             }
         }
+
+        RoundButton {
+            id: nextButton
+            anchors.left: playButton.right
+            anchors.leftMargin: 32
+            anchors.verticalCenter: playButton.verticalCenter
+
+            width: 128
+            height: width
+
+            background: Image {
+                id: bgNext
+                anchors.fill: parent
+                source: {
+                    if (nextButton.pressed)
+                    {
+                        return "qrc:/Resources/next_focus.png"
+                    }
+                    else
+                    {
+                        return "qrc:/Resources/next_idle.png"
+                    }
+                }
+            }
+
+            onClicked: {
+                nextVideo()
+            }
+        }
+
+        RoundButton {
+            id: prevButton
+            width: nextButton.width
+            height: width
+            anchors.right: playButton.left
+            anchors.rightMargin: 32
+            anchors.verticalCenter: playButton.verticalCenter
+
+            background: Image {
+                id: bgPrev
+                anchors.fill: parent
+                source: {
+                    if (prevButton.pressed)
+                    {
+                        return "qrc:/Resources/prev_focus.png"
+                    }
+                    else
+                    {
+                        return "qrc:/Resources/prev_idle.png"
+                    }
+                }
+            }
+
+            onClicked: {
+                prevVideo()
+            }
+        }
+
 
         TextField {
             id: videoPosition
@@ -210,11 +355,14 @@ Item {
             to: video.duration
 
             onMoved: {
+                nextVideoTimer.stop()
+                countDownText.text = ""
                 controlFade.stop()
                 controlWidget.opacity = 1
                 controlWidget.enabled = true
                 controlTimer.stop()
                 video.seek(timeSlider.position * video.duration)
+                video.play()
                 controlTimer.restart()
             }
         }
@@ -233,35 +381,28 @@ Item {
         onDoubleTapped: {
             if (eventPoint.scenePosition.x < root.width / 2)
             {
-                console.debug("left double touch")
                 video.seek(video.position - 10000)
             }
             else
             {
-                console.debug("right double touch")
                 video.seek(video.position + 10000)
             }
         }
     }
 
-
-    function play(){
-        if (audioPlayer.isPlaying)
-        {
-            audioPlayer.togglePlay()
-        }
-
-        controlFade.stop()
+    function play() {
         video.play()
+        nextVideoTimer.stop()
+        countDownText.text = ""
+        controlFade.stop()
+        video.seek(startPosition * video.duration / 100)
         controlWidget.opacity = 1
         controlWidget.enabled = true
         controlTimer.restart()
-        console.log("play: " + videoSource)
 
     }
 
     function stop() {
         video.pause()
-        console.log("video stop")
     }
 }

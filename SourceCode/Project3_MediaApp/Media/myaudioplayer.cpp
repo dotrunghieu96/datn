@@ -15,7 +15,6 @@ MyAudioPlayer::MyAudioPlayer(QObject *parent) : QObject(parent)
     QObject::connect(m_player, &QMediaPlayer::currentMediaChanged,
                      this, &MyAudioPlayer::mediaChangedHandler);
 
-    m_isShuffle = false;
     m_playbackMode = SEQUENCE;
 }
 
@@ -51,6 +50,7 @@ void MyAudioPlayer::setMedia(const int &index)
         setDuration(m_player->duration());
         setPosition(m_player->position());
         setIsPlaying(m_player->state() == QMediaPlayer::PlayingState);
+        m_nowPlayingIndex = index;
     }
 }
 
@@ -100,13 +100,20 @@ void MyAudioPlayer::previous()
             m_player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
             setPlaybackMode(REPEAT_ALL);
         }
-        if (m_player->playlist()->currentIndex() == 0)
+        if (m_player->position() <= 3000)
         {
-            m_player->playlist()->setCurrentIndex(m_player->playlist()->mediaCount() - 1);
+            if (m_player->playlist()->currentIndex() == 0)
+            {
+                m_player->playlist()->setCurrentIndex(m_player->playlist()->mediaCount() - 1);
+            }
+            else
+            {
+                m_player->playlist()->previous();
+            }
         }
         else
         {
-            m_player->playlist()->previous();
+            m_player->play();
         }
         m_player->play();
         setIsPlaying(m_player->state() == QMediaPlayer::PlayingState);
@@ -151,11 +158,6 @@ void MyAudioPlayer::loadPlaylist()
 int MyAudioPlayer::playbackMode() const
 {
     return QVariant(m_playbackMode).toInt();
-}
-
-bool MyAudioPlayer::isShuffle() const
-{
-    return m_isShuffle;
 }
 
 void MyAudioPlayer::setIsPlaying(bool isPlaying)
@@ -251,19 +253,6 @@ void MyAudioPlayer::setDuration(const qint64 &duration)
     emit durationChanged(m_duration);
 }
 
-void MyAudioPlayer::toggleShuffle()
-{
-    //TO-DO: a solution for shuffle
-    if (m_isShuffle == false) {
-        m_isShuffle = true;
-    }
-    else
-    {
-        m_isShuffle = false;
-    }
-    emit shuffleChanged(m_isShuffle);
-}
-
 void MyAudioPlayer::setOriginalPlaylist(PlaylistModel *originalPlaylist)
 {
     if (m_originalPlaylist != originalPlaylist)
@@ -282,6 +271,7 @@ void MyAudioPlayer::setOriginalPlaylist(PlaylistModel *originalPlaylist)
 void MyAudioPlayer::stopMedia()
 {
     m_player->stop();
+    setIsPlaying(m_player->state() == QMediaPlayer::PlayingState);
 }
 
 qint64 MyAudioPlayer::duration() const

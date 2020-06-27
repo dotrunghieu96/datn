@@ -16,11 +16,13 @@ QVariant VideoPlaylistModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() >= m_data.count())
         return QVariant();
 
-    const Video &song = m_data[index.row()];
+    const Video &video = m_data[index.row()];
     if (role == TitleRole)
-        return song.title();
+        return video.title();
     else if (role == VideoSrcRole)
-        return song.videoSrc();
+        return video.videoSrc();
+    else if (role == ThumbnailSrcRole)
+        return video.thumbnailSource();
     return QVariant();
 }
 
@@ -41,5 +43,29 @@ QHash<int, QByteArray> VideoPlaylistModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[TitleRole] = "title";
     roles[VideoSrcRole] = "videoSrc";
+    roles[ThumbnailSrcRole] = "thumnailSrc";
     return roles;
+}
+
+int VideoPlaylistModel::nowPlayingIndex() const
+{
+    return m_nowPlayingIndex;
+}
+
+void VideoPlaylistModel::setNowPlayingIndex(const int &nowPlayingIndex)
+{
+    m_nowPlayingIndex = nowPlayingIndex;
+}
+
+void VideoPlaylistModel::setNowPlayingIndex(const QString &source)
+{
+    for (int i = 0; i < rowCount(); i++)
+    {
+        if (source == data(this->index(i), VideoPlaylistModel::VideoSrcRole).toString())
+        {
+            m_nowPlayingIndex = i;
+            emit nowPlayingIndexChanged(m_nowPlayingIndex);
+        }
+    }
+
 }

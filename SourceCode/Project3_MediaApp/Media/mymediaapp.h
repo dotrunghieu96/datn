@@ -10,7 +10,7 @@
 #include <QJsonDocument>
 #include <QStandardPaths>
 
-#include "mediadirmodel.h"
+#include "mediaplaybackinfo.h"
 #include "playlistmodel.h"
 #include "videoplaylistmodel.h"
 #include "myaudioplayer.h"
@@ -34,37 +34,28 @@ class MyMediaApp : public QObject
 public:
     explicit MyMediaApp(QObject *parent = nullptr);
 
-    MediaDirModel *mediaDirModel() const;
+    MediaPlaybackInfo *mediaPlaybackInfo() const;
     PlaylistModel *allAudios() const;
     VideoPlaylistModel *allVideos() const;
     MyAudioPlayer *audioPlayer() const;
 
 public slots:
-    void saveDirectoriesAndReload();
-    void resetMediaDirList();
+    void updateLastAudio(int index);
+    void writePlaybackInfoToFile();
 
 private:
     void scanMedias();
-    void readDirectoriesInfoFromFile();
-    void writeDirectoriesInfoToFile();
+    void readMediaPlaybackInfoFromFile();
     void addToAudioPlaylist(const QList<QUrl> &urls);
     void addToVideoPlaylist(const QList<QUrl> &urls);
     QString getAlbumArt(QUrl url);
 
 private:
     PlaylistModel *m_allAudios = nullptr;
-
     VideoPlaylistModel *m_allVideos = nullptr;
-
-    //the directories model to interact with on gui
-    MediaDirModel *m_mediaDirModel = nullptr;
-
-    //the actual directories list
-    QList<MediaDir> *m_actualDir = nullptr;
-
+    //Info of last playback
+    MediaPlaybackInfo *m_mediaPlaybackInfo = nullptr;
     MyAudioPlayer *m_audioPlayer = nullptr;
-
-
 };
 
 #endif // MYMEDIAAPP_H

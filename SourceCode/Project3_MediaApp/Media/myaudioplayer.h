@@ -23,7 +23,6 @@ class MyAudioPlayer : public QObject
     Q_PROPERTY(bool mediaAvailable READ mediaAvailable NOTIFY mediaAvailableChanged)
     Q_PROPERTY(bool isPlaying READ isPlaying NOTIFY isPlayingChanged)
     Q_PROPERTY(int nowPlayingIndex READ nowPlayingIndex NOTIFY nowPlayingIndexChanged)
-    Q_PROPERTY(bool isShuffle READ isShuffle NOTIFY shuffleChanged)
     Q_PROPERTY(int playbackMode READ playbackMode NOTIFY playbackModeChanged)
 
 public:
@@ -36,13 +35,11 @@ public:
     bool mediaAvailable() const;
     bool isPlaying() const;
     int nowPlayingIndex() const;
-    bool isShuffle() const;
     int playbackMode() const;
 
 signals:
     void nowPlayingIndexChanged(int nowPlayingIndex);
     void playbackModeChanged(int currentMode);
-    void shuffleChanged(bool isShuffle);
     void durationChanged(qint64 duration);
     void positionChanged(qint64 position);
     void mediaAvailableChanged(bool mediaAvailable);
@@ -52,7 +49,6 @@ signals:
 public slots:
     void setMedia(const int &index);
     void setPositionByPercent(const int &percent);
-    void toggleShuffle();
     void switchPlaybackMode();
     void togglePlay();
     void next();
@@ -74,7 +70,6 @@ private:
     QMediaPlaylist *m_playlist = nullptr;
     PlaylistModel *m_originalPlaylist = nullptr;
     PlaybackMode m_playbackMode;
-    bool m_isShuffle;
     qint64 m_duration;
     qint64 m_position;
     bool m_mediaAvailable;

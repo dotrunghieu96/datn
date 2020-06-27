@@ -3,19 +3,21 @@
 MyMediaApp::MyMediaApp(QObject *parent) : QObject(parent)
 {
     m_audioPlayer = new MyAudioPlayer();
-    m_mediaDirModel = new MediaDirModel();
+    m_mediaPlaybackInfo = new MediaPlaybackInfo("", 0, "", "");
     m_allAudios = new PlaylistModel();
     m_allVideos = new VideoPlaylistModel();
-    m_actualDir = new QList<MediaDir>();
+
+    QObject::connect(m_audioPlayer, &MyAudioPlayer::nowPlayingIndexChanged,
+                     this, &MyMediaApp::updateLastAudio);
 
     //load media from selected directories
-    readDirectoriesInfoFromFile();
+    readMediaPlaybackInfoFromFile();
     scanMedias();
 }
 
-MediaDirModel *MyMediaApp::mediaDirModel() const
+MediaPlaybackInfo *MyMediaApp::mediaPlaybackInfo() const
 {
-    return m_mediaDirModel;
+    return m_mediaPlaybackInfo;
 }
 
 PlaylistModel *MyMediaApp::allAudios() const
@@ -33,28 +35,10 @@ MyAudioPlayer *MyMediaApp::audioPlayer() const
     return m_audioPlayer;
 }
 
-void MyMediaApp::saveDirectoriesAndReload()
+void MyMediaApp::updateLastAudio(int index)
 {
-    //save directories
-    writeDirectoriesInfoToFile();
-
-    //Stop the current media player
-    m_audioPlayer->stopMedia();
-
-    //reload media from recently saved directories
-    readDirectoriesInfoFromFile();
-    scanMedias();
-}
-
-void MyMediaApp::resetMediaDirList()
-{
-    m_mediaDirModel->clearData();
-
-    QList<MediaDir>::iterator i;
-    for(i = m_actualDir->begin(); i != m_actualDir->end(); ++i)
-    {
-        m_mediaDirModel->addMediaDir(i->sourceDir(), i->enableStatus());
-    }
+    QString source = m_allAudios->data(m_allAudios->index(index), PlaylistModel::SourceRole).toString();
+    m_mediaPlaybackInfo->setLastAudio(source);
 }
 
 void MyMediaApp::scanMedias()
@@ -66,43 +50,43 @@ void MyMediaApp::scanMedias()
     QStringList fileFilter;
     fileFilter << "*.mp3";
     fileFilter << "*.mp4";
-    for (int i = 0; i < m_mediaDirModel->rowCount(); i++)
+
+#ifdef _rapsberrypi_
+    QString defaultDir = QStandardPaths::locate(QStandardPaths::HomeLocation,
+                                                "",
+                                                QStandardPaths::LocateDirectory);
+    QDirIterator it(defaultDir,
+                    fileFilter,
+                    QDir::Files,
+                    QDirIterator::Subdirectories);
+#else
+    QString defaultDir = QStandardPaths::locate(QStandardPaths::MusicLocation,
+                                                "",
+                                                QStandardPaths::LocateDirectory);
+    QDirIterator it(defaultDir,
+                    fileFilter,
+                    QDir::Files,
+                    QDirIterator::Subdirectories);
+#endif
+    while (it.hasNext())
     {
-        if (m_mediaDirModel->data(m_mediaDirModel->index(i),
-                                  MediaDirModel::EnableStatusRole).toBool())
+        it.next();
+        if (it.filePath().endsWith("mp3"))
         {
-            QDirIterator it(m_mediaDirModel->data(m_mediaDirModel->index(i),
-                                                  MediaDirModel::SourceDirRole).toString(),
-                            fileFilter,
-                            QDir::Files,
-                            QDirIterator::Subdirectories);
-            while (it.hasNext())
-            {
-                it.next();
-                if (it.filePath().endsWith("mp3"))
-                {
-                    audioUrls.append(QUrl::fromLocalFile(it.filePath()));
-                }
-                else
-                {
-                    videoUrls.append(QUrl::fromLocalFile(it.filePath()));
-                }
-            }
+            audioUrls.append(QUrl::fromLocalFile(it.filePath()));
+        }
+        else
+        {
+            videoUrls.append(QUrl::fromLocalFile(it.filePath()));
         }
     }
     addToAudioPlaylist(audioUrls);
     addToVideoPlaylist(videoUrls);
-    m_audioPlayer->setOriginalPlaylist(m_allAudios);
 }
 
-void MyMediaApp::readDirectoriesInfoFromFile()
+void MyMediaApp::readMediaPlaybackInfoFromFile()
 {
-    //Clear old data
-    m_mediaDirModel->clearData();
-    m_actualDir->clear();
-
     //Open json file
-    //parse directories
     QFile jsonFile(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/" + CONFIG_FILE_NAME);
     if(jsonFile.open(QIODevice::ReadOnly))
     {
@@ -117,61 +101,33 @@ void MyMediaApp::readDirectoriesInfoFromFile()
 
         if(!jsonDoc.isNull() && jsonDoc.isObject())
         {
-            QJsonObject jsonObj = jsonDoc.object();
+            //Parse data
+            QJsonObject jsonObj = jsonDoc.object().take("mediaPlaybackInfo").toObject();
 
-            QJsonArray directories = jsonObj.take("Directories").toArray();
-
-            int dirCount = directories.count();
-
-            for (int i = 0; i < dirCount; i++)
-            {
-                QJsonObject leafObj = directories.takeAt(0).toObject();
-                QString sourceDir = leafObj.take("sourceDir").toString();
-                bool enableStatus = QVariant(leafObj.take("enableStatus").toString()).toBool();
-                m_mediaDirModel->addMediaDir(sourceDir, enableStatus);
-                MediaDir mediaDir(sourceDir, enableStatus);
-                m_actualDir->append(mediaDir);
-            }
+            QString videoSouce = jsonObj.take("videoSource").toString();
+            quint8 videoPosition = QVariant(jsonObj.take("videoPosition").toString()).toULongLong();
+            QString audioSource = jsonObj.take("audioSource").toString();
+            QString secVideoSouce = jsonObj.take("secVideoSource").toString();
+            m_mediaPlaybackInfo->setLastVideoSource(secVideoSouce);
+            m_mediaPlaybackInfo->updateLastVideo(videoSouce);
+            m_mediaPlaybackInfo->setLastVideoPosition(videoPosition);
+            m_mediaPlaybackInfo->setLastAudio(audioSource);
         }
-    }
-
-    //If open failed or data is invalid, load default
-    if (m_mediaDirModel->rowCount() == 0)
-    {
-        m_mediaDirModel->loadDefault();
-        //override corrupted data with default data
-        writeDirectoriesInfoToFile();
     }
 }
 
-void MyMediaApp::writeDirectoriesInfoToFile()
+void MyMediaApp::writePlaybackInfoToFile()
 {
-    //Clear the hidden actual directories list
-    m_actualDir->clear();
-
-    //Create JSON data
-    QJsonArray jsonArray;
-
-    for(int i = 0; i < m_mediaDirModel->rowCount(); i++)
-    {
-        //sync the actual directories list with configured one
-        QString source = m_mediaDirModel->data(m_mediaDirModel->index(i),
-                                               MediaDirModel::SourceDirRole).toString();
-        bool enableStatus = m_mediaDirModel->data(m_mediaDirModel->index(i),
-                                                  MediaDirModel::EnableStatusRole).toBool();
-        MediaDir mediaDir(source, enableStatus);
-        m_actualDir->append(mediaDir);
-
-        //push data to json
-        QJsonObject jsonObject;
-        jsonObject.insert("sourceDir",source);
-        jsonObject.insert("enableStatus", QVariant(enableStatus).toString());
-        jsonArray.push_back(jsonObject);
-    }
+    //push data to json
+    QJsonObject jsonObject;
+    jsonObject.insert("videoSource",m_mediaPlaybackInfo->lastVideoSource());
+    jsonObject.insert("videoPosition",QString::number(m_mediaPlaybackInfo->lastVideoPosition()));
+    jsonObject.insert("audioSource",m_mediaPlaybackInfo->lastAudioSource());
+    jsonObject.insert("secVideoSource",m_mediaPlaybackInfo->secLastVideoSource());
 
 
     QJsonObject finalObject;
-    finalObject.insert("Directories", QJsonValue(jsonArray));
+    finalObject.insert("mediaPlaybackInfo", QJsonValue(jsonObject));
     QJsonDocument jsonDoc(finalObject);
 
     //Open file to write data
@@ -194,8 +150,10 @@ void MyMediaApp::writeDirectoriesInfoToFile()
 
 void MyMediaApp::addToAudioPlaylist(const QList<QUrl> &urls)
 {
-    for (auto &url: urls)
+    int lastPlayIndex = 0;
+    for (int i = 0; i < urls.size(); i++)
     {
+        QUrl url = urls.at(i);
         QString title = "";
         QString singer = "";
 
@@ -211,17 +169,25 @@ void MyMediaApp::addToAudioPlaylist(const QList<QUrl> &urls)
                   url.toDisplayString(),
                   getAlbumArt(url));
         m_allAudios->addSong(song);
+        if (m_mediaPlaybackInfo->lastAudioSource() == url.toDisplayString())
+        {
+            lastPlayIndex = i;
+        }
+
     }
     m_audioPlayer->setOriginalPlaylist(m_allAudios);
+    m_audioPlayer->setMedia(lastPlayIndex);
+    m_audioPlayer->stopMedia();
 }
 
 void MyMediaApp::addToVideoPlaylist(const QList<QUrl> &urls)
 {
     for (auto &url: urls)
     {
-        QString title = url.fileName().replace(".mp4","");
+        QFileInfo fileInfo(url.toDisplayString());
+        QString title = fileInfo.baseName();
         QString videoSrc = url.toDisplayString();
-        Video video(title, videoSrc);
+        Video video(title, videoSrc, "");
         m_allVideos->addVideo(video);
     }
 }

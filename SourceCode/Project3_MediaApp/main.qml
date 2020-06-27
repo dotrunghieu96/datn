@@ -10,6 +10,9 @@ Window {
     height: 720
     flags: Qt.FramelessWindowHint
 
+    Component.onDestruction: {
+        appCore.writePlaybackInfoToFile()
+    }
 
     Image {
         id: background
@@ -170,6 +173,8 @@ Window {
                     width: 160
                     height: width
 
+                    opacity: 0.5
+
                     enabled: audioPlayer.mediaAvailable
 
                     background: Image {
@@ -215,6 +220,8 @@ Window {
                     width: 128
                     height: width
 
+                    opacity: 0.5
+
                     enabled: audioPlayer.mediaAvailable
 
                     background: Image {
@@ -244,6 +251,8 @@ Window {
 
                     width: nextButton.width
                     height: width
+
+                    opacity: 0.5
 
                     enabled: audioPlayer.mediaAvailable
 
@@ -320,30 +329,6 @@ Window {
                 onBackClicked: {
                     stackView.push(mainView)
                 }
-
-                onSettingClicked: {
-                    stackView.push(setting)
-                }
-            }
-        }
-    }
-
-    Component {
-        id: setting
-
-        Item {
-            MediaAppSetting {
-                anchors.fill: parent
-
-                onBackClicked: {
-                    appCore.resetMediaDirList()
-                    stackView.push(appMediaComponent)
-                }
-
-                onSaveClicked: {
-                    appCore.saveDirectoriesAndReload()
-                    stackView.push(appMediaComponent)
-                }
             }
         }
     }
@@ -357,6 +342,13 @@ Window {
 
                 onBackClicked: {
                     stackView.push(mainView)
+                }
+
+                onStartVideo: {
+                    if (audioPlayer.isPlaying)
+                    {
+                        audioPlayer.togglePlay()
+                    }
                 }
             }
         }

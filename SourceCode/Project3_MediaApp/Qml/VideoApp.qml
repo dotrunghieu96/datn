@@ -1,14 +1,21 @@
 import QtQuick 2.12
+import QtQuick.Controls 2.12
 import QtMultimedia 5.12
 import QtGraphicalEffects 1.0
 
 Item {
     id: root
     signal backClicked()
+    signal startVideo()
 
     Component.onCompleted: {
         slideIn.stop()
         slideOut.stop()
+    }
+
+    Component.onDestruction: {
+        lastPlayVideos.destroy()
+        player.destroy()
     }
 
     MyButton {
@@ -22,42 +29,272 @@ Item {
         buttonText: "HOME"
 
         onButtonClicked: {
+            lastVideoPreview.source = ""
+            player.videoSource = ""
             backClicked()
         }
     }
 
+    DateTimeWidget {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 16
+        anchors.rightMargin: 16
+    }
 
-//    ListModel {
-//        id: videoPlaylist
+    Text {
+        id: continuePlayingText
+        anchors.top: backButton.bottom
+        anchors.topMargin: 64
+        anchors.left: backButton.left
+        color: "white"
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignBottom
 
-//        ListElement {
-//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight.mp4"
-//            title: "Hollow Knight"
-//        }
+        font.pixelSize: 26
 
-//        ListElement {
-//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy.mp4"
-//            title: "Hollow Knight"
-//        }
+        text: "Continue Playing"
+    }
 
-//        ListElement {
-//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy_1.mp4"
-//            title: "Hollow Knight"
-//        }
+    Rectangle {
+        id: lastPlayVideos
+        anchors.top: backButton.bottom
+        anchors.topMargin: 112
+        anchors.left: backButton.left
+        anchors.right: parent.right
+        anchors.rightMargin: 24
+        height: 288
+        color: "transparent"
 
-//        ListElement {
-//            videoSrc: "C:/Users/dotru/Videos/Captures/Hollow_Knight_Copy_2.mp4"
-//            title: "Hollow Knight"
-//        }
-//    }
+        Rectangle {
+            id: lastVideo
+            anchors.top: lastPlayVideos.top
+            anchors.left: lastPlayVideos.left
+            height: parent.height
+            width: 512
+
+            color: "black"
+
+            OpacityMask {
+                source: mask
+                maskSource: lastVideo
+            }
+
+            LinearGradient {
+                id: mask
+                anchors.fill: parent
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: "transparent"}
+                    GradientStop { position: 1.0; color: "black" }
+                }
+            }
+
+            Video {
+                id: lastVideoPreview
+                anchors.fill: parent
+
+                source: mediaPlaybackInfo.lastVideoSource()
+
+                onDurationChanged: {
+                    if (source !== "" && duration != 0)
+                    {
+                        play()
+                        seek(mediaPlaybackInfo.lastVideoPosition() * duration / 100)
+                        pause()
+                    }
+                }
+
+                function refresh() {
+                    source = mediaPlaybackInfo.lastVideoSource()
+                    if (source !== "")
+                    {
+                        play()
+                        seek(mediaPlaybackInfo.lastVideoPosition() * duration / 100)
+                        pause()
+                    }
+                }
+            }
+
+            RoundButton {
+                id: playButton
+                anchors.centerIn: parent
+                width: 160
+                height: width
+                opacity: 0.5
+
+                background: Image {
+                    id: bgPlay
+                    anchors.fill: parent
+                    source: {
+                        if (playButton.pressed)
+                        {
+                            playButton.opacity = 1
+                            return "qrc:/Resources/play_focus.png"
+                        }
+                        else
+                        {
+                            playButton.opacity = 0.5
+                            return "qrc:/Resources/play_idle.png"
+                        }
+                    }
+                }
+
+                onClicked: {
+                    if (mediaPlaybackInfo.lastVideoSource() !== "")
+                    {
+                        player.videoSource = mediaPlaybackInfo.lastVideoSource()
+                        player.startPosition = mediaPlaybackInfo.lastVideoPosition()
+                        lastVideoPreview.source = ""
+                        backButton.enabled = false
+                        videoGrid.enabled = false
+                        slideIn.restart()
+                    }
+                }
+            }
+
+            Text {
+                id: lastVideoName
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 8
+                anchors.left: parent.left
+                anchors.leftMargin: 8
+                width: parent.width
+
+                text: mediaPlaybackInfo.lastVideoName
+                clip: true
+
+                font.family: "Helvetica"
+                font.bold: true
+                font.pixelSize: 26
+                wrapMode: Text.WordWrap
+                color: "white"
+            }
+
+        }
+
+        Rectangle {
+            id: secLastVideo
+            anchors.top: parent.top
+            anchors.left: lastVideo.right
+            anchors.leftMargin: 32
+            width: 384
+            height: width / 16 * 9
+            color: "transparent"
+
+            visible: mediaPlaybackInfo.secLastVideoName !== ""
+            enabled: visible
+
+            Image {
+                id: secVideoThumbnail
+                anchors.fill: parent
+                source: "qrc:/Resources/video_thumbnail.jpg"
+
+                visible: mediaPlaybackInfo.secLastVideoName !== ""
+
+                MouseArea {
+                    id: secMouseArea
+                    anchors.fill: parent
+
+                    onPressed: {
+                        parent.opacity = 0.7
+                    }
+
+                    onReleased: {
+                        parent.opacity = 1
+                    }
+
+                    onCanceled: {
+                        parent.opacity = 1
+                    }
+
+                    onClicked: {
+                        player.videoSource = mediaPlaybackInfo.secLastVideoSource()
+                        player.startPosition = 0
+                        backButton.enabled = false
+                        videoGrid.enabled = false
+                        mediaPlaybackInfo.updateLastVideo(mediaPlaybackInfo.secLastVideoSource())
+                        slideIn.restart()
+                    }
+                }
+            }
+        }
+
+        Text {
+            id: secLastVideoName
+            anchors.left: secLastVideo.left
+            anchors.top: secLastVideo.bottom
+            anchors.topMargin: 4
+            width: secLastVideo.width
+
+            wrapMode: Text.WordWrap
+
+            font.bold: true
+            font.family: "Helvetica"
+            font.pixelSize: 16
+            color: "white"
+
+            text: mediaPlaybackInfo.secLastVideoName
+        }
+    }
+
+    Rectangle {
+        id: spliter
+
+        anchors.left: lastPlayVideos.left
+        anchors.top: lastPlayVideos.bottom
+        anchors.topMargin: 24
+
+        height: 1
+        width: lastPlayVideos.width
+
+        LinearGradient {
+            anchors.fill: parent
+            start: Qt.point(0,0)
+            end: Qt.point(width, 0)
+            gradient: Gradient {
+                GradientStop {
+                    position: 0.0;
+                    color: "black"
+                }
+
+                GradientStop {
+                    position: 0.25;
+                    color: "green"
+                }
+
+                GradientStop {
+                    position: 0.75;
+                    color: "green"
+                }
+
+                GradientStop {
+                    position: 1.0;
+                    color: "black"
+                }
+            }
+        }
+    }
+
+    Text {
+        id: allVideoText
+        anchors.top: spliter.bottom
+        anchors.topMargin: 8
+        anchors.left: backButton.left
+        color: "white"
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+
+        font.pixelSize: 26
+
+        text: "All Videos"
+    }
 
     Rectangle {
         id: videoGrid
-        anchors.top: backButton.bottom
-        anchors.topMargin: 64
+        anchors.top: lastPlayVideos.bottom
+        anchors.topMargin: 82
         anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.leftMargin: 32
+        anchors.left: backButton.left
         anchors.right: parent.right
         color: "transparent"
 
@@ -65,32 +302,21 @@ Item {
             id: videoDelegate
             Item {
                 id: delegateItem
-                width: 384
+                width: 256+32
                 height: 280
 
                 Rectangle {
                     id: thumbnail
                     anchors.top: parent.top
                     anchors.left: parent.left
-                    width: 384
-                    height: 216
-                    radius: 5
+                    width: 256
+                    height: width / 16 * 9
 
-                    color: "transparent"
+                    color: "black"
 
                     Image {
                         anchors.fill: parent
-                        source: "qrc:/Resources/video_thumbnail.png"
-
-                        TapHandler {
-                            acceptedDevices: PointerDevice.TouchScreen
-                            onTapped: {
-                                player.videoSource = videoSrc
-                                backButton.enabled = false
-                                videoGrid.enabled = false
-                                slideIn.restart()
-                            }
-                        }
+                        source: "qrc:/Resources/video_thumbnail.jpg"
 
                         MouseArea {
                             anchors.fill: parent
@@ -109,8 +335,10 @@ Item {
 
                             onClicked: {
                                 player.videoSource = videoSrc
+                                player.startPosition = 0
                                 backButton.enabled = false
                                 videoGrid.enabled = false
+                                mediaPlaybackInfo.updateLastVideo(videoSrc)
                                 slideIn.restart()
                             }
                         }
@@ -120,51 +348,34 @@ Item {
 
                 Text {
                     text: title
-                    height: 48
                     width: thumbnail.width
                     anchors.left: parent.left
-                    anchors.leftMargin: 4
                     anchors.top: thumbnail.bottom
                     anchors.topMargin: 4
                     font.bold: true
                     font.family: "Helvetica"
-                    font.pixelSize: 28
-                    fontSizeMode: Text.Fit
+                    font.pixelSize: 16
+                    wrapMode: Text.WordWrap
                     color: "white"
                 }
-
-                Image {
-                    id: playingState
-                    height: 36
-                    width: 36
-                    anchors.right: thumbnail.right
-                    anchors.top: thumbnail.bottom
-                    anchors.topMargin: 4
-
-                    source: {
-                        if (player.videoSource == videoSrc
-                            && player.isPausing == true)
-                        {
-                            return "qrc:/Resources/video_state_pause.png"
-                        }
-                        else
-                        {
-                            return ""
-                        }
-                    }
-                }
-
             }
         }
 
-        GridView {
+        ListView {
             id: grid
             anchors.fill: parent
-            cellWidth: 416
-            cellHeight: 280
+            anchors.rightMargin: 24
+            anchors.bottomMargin: 16
+            orientation: Qt.Horizontal
             clip: true
             model: videoPlaylist
             delegate: videoDelegate
+
+            ScrollBar.horizontal: ScrollBar {
+                id: hBar
+                active: true
+                width: parent.width
+            }
         }
     }
 
@@ -195,7 +406,7 @@ Item {
                 easing.type: Easing.InOutQuad
 
                 onFinished: {
-                    console.log("video visible: " + player.visible)
+                    startVideo()
                     player.play()
                 }
             }
@@ -209,18 +420,59 @@ Item {
                 duration: 500
                 easing.type: Easing.InOutQuad
 
-                onFinished: {
-                    videoGrid.enabled = true
-                    backButton.enabled = true
-                }
             }
 
             onBackClicked: {
                 slideOut.restart()
+                videoGrid.enabled = true
+                backButton.enabled = true
+                player.videoSource = ""
+                lastVideoPreview.refresh()
+                appCore.writePlaybackInfoToFile()
             }
 
-            onVideoStopped: {
-                console.log("video stopped")
+            onNextVideo: {
+                if (player.videoSource == "")
+                {
+                    console.log("do nothing")
+                }
+                else
+                {
+                    if (videoPlaylist.nowPlayingIndex === videoPlaylist.rowCount() - 1)
+                    {
+                        player.videoSource = videoPlaylist.data(videoPlaylist.index(0,0), 258)
+                    }
+                    else
+                    {
+                        player.videoSource = videoPlaylist.data(videoPlaylist.index(videoPlaylist.nowPlayingIndex + 1,0), 258)
+                    }
+                    console.log("request next video: " + player.videoSource)
+                    mediaPlaybackInfo.updateLastVideo(player.videoSource)
+                    startVideo()
+                    player.play()
+                }
+            }
+
+            onPrevVideo: {
+                if (player.videoSource == "")
+                {
+                    console.log("do nothing")
+                }
+                else
+                {
+                    if (videoPlaylist.nowPlayingIndex === 0)
+                    {
+                        player.videoSource = videoPlaylist.data(videoPlaylist.index(videoPlaylist.rowCount() - 1,0), 258)
+                    }
+                    else
+                    {
+                        player.videoSource = videoPlaylist.data(videoPlaylist.index(videoPlaylist.nowPlayingIndex - 1,0), 258)
+                    }
+                    console.log("request prev video: " + player.videoSource)
+                    mediaPlaybackInfo.updateLastVideo(player.videoSource)
+                    startVideo()
+                    player.play()
+                }
             }
         }
     }

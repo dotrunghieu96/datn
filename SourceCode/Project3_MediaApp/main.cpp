@@ -15,18 +15,11 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    QFileSystemModel *fileSystemModel = new QFileSystemModel();
-    fileSystemModel->setRootPath(QDir::homePath());
-    fileSystemModel->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-
     engine.rootContext()->setContextProperty("appCore", mediaApp);
     engine.rootContext()->setContextProperty("audioPlayer", mediaApp->audioPlayer());
     engine.rootContext()->setContextProperty("playlist", mediaApp->allAudios());
     engine.rootContext()->setContextProperty("videoPlaylist", mediaApp->allVideos());
-    engine.rootContext()->setContextProperty("directories", mediaApp->mediaDirModel());
-
-    engine.rootContext()->setContextProperty("fileSystemModel", fileSystemModel);
-    engine.rootContext()->setContextProperty("rootPathIndex", fileSystemModel->index(fileSystemModel->rootPath()));
+    engine.rootContext()->setContextProperty("mediaPlaybackInfo", mediaApp->mediaPlaybackInfo());
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
