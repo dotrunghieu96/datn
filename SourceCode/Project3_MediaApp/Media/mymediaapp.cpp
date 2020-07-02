@@ -231,10 +231,5 @@ QString MyMediaApp::getAlbumArt(QUrl url)
             }
         }
     }
-    else
-    {
-        qDebug() <<"id3v2 not present";
-        return "qrc:/Resources/album_art.png";
-    }
     return "qrc:/Resources/album_art.png";
 }

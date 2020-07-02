@@ -20,8 +20,7 @@
         <file>Resources/playlist_focus.png</file>
         <file>Resources/playlist_idle.png</file>
         <file>Resources/video_state_pause.png</file>
-        <file>Qml/AudioPlayer.qml</file>
-        <file>Qml/MediaApp.qml</file>
+        <file>Qml/AudioApp.qml</file>
         <file>Qml/MyButton.qml</file>
         <file>Qml/VideoApp.qml</file>
         <file>Qml/VideoPlayer.qml</file>
@@ -30,5 +29,6 @@
         <file>Qml/DateTimeWidget.qml</file>
         <file>Resources/replay_focus.png</file>
         <file>Resources/replay_idle.png</file>
+        <file>Qml/AudioWidget.qml</file>
     </qresource>
 </RCC>

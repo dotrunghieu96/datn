@@ -43,7 +43,7 @@ QHash<int, QByteArray> VideoPlaylistModel::roleNames() const
     QHash<int, QByteArray> roles;
     roles[TitleRole] = "title";
     roles[VideoSrcRole] = "videoSrc";
-    roles[ThumbnailSrcRole] = "thumnailSrc";
+    roles[ThumbnailSrcRole] = "thumbnailSrc";
     return roles;
 }
 

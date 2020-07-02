@@ -115,29 +115,28 @@ Item {
                 }
             }
 
-            RoundButton {
-                id: playButton
+            Image {
                 anchors.centerIn: parent
                 width: 160
                 height: width
                 opacity: 0.5
-
-                background: Image {
-                    id: bgPlay
-                    anchors.fill: parent
-                    source: {
-                        if (playButton.pressed)
-                        {
-                            playButton.opacity = 1
-                            return "qrc:/Resources/play_focus.png"
-                        }
-                        else
-                        {
-                            playButton.opacity = 0.5
-                            return "qrc:/Resources/play_idle.png"
-                        }
+                source: {
+                    if (playButton.pressed)
+                    {
+                        playButton.opacity = 1
+                        return "qrc:/Resources/play_focus.png"
+                    }
+                    else
+                    {
+                        playButton.opacity = 0.5
+                        return "qrc:/Resources/play_idle.png"
                     }
                 }
+            }
+
+            MouseArea {
+                id: playButton
+                anchors.fill: parent
 
                 onClicked: {
                     if (mediaPlaybackInfo.lastVideoSource() !== "")
@@ -316,7 +315,7 @@ Item {
 
                     Image {
                         anchors.fill: parent
-                        source: "qrc:/Resources/video_thumbnail.jpg"
+                        source: thumbnailSrc
 
                         MouseArea {
                             anchors.fill: parent

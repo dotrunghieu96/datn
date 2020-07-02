@@ -51,11 +51,12 @@ private:
     QString getAlbumArt(QUrl url);
 
 private:
+    MyAudioPlayer *m_audioPlayer = nullptr;
     PlaylistModel *m_allAudios = nullptr;
     VideoPlaylistModel *m_allVideos = nullptr;
+
     //Info of last playback
     MediaPlaybackInfo *m_mediaPlaybackInfo = nullptr;
-    MyAudioPlayer *m_audioPlayer = nullptr;
 };
 
 #endif // MYMEDIAAPP_H

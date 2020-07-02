@@ -3,7 +3,6 @@ import QtQuick.Controls 2.13
 import QtGraphicalEffects 1.13
 
 Item {
-
     signal backClicked()
     signal settingClicked()
 

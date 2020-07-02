@@ -19,5 +19,5 @@ QString Video::videoSrc() const
 
 QString Video::thumbnailSource() const
 {
-    return m_thumbnailSource;
+    return "qrc:/Resources/video_thumbnail.jpg";
 }
