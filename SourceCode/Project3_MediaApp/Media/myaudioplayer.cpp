@@ -95,12 +95,13 @@ void MyAudioPlayer::previous()
 {
     if (m_playlist->mediaCount() > 0)
     {
+        qint64 currentPos = m_player->position();
         m_player->stop();
         if (m_playbackMode == REPEAT_ONE) {
             m_player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
             setPlaybackMode(REPEAT_ALL);
         }
-        if (m_player->position() <= 3000)
+        if (currentPos <= 3000)
         {
             if (m_player->playlist()->currentIndex() == 0)
             {
