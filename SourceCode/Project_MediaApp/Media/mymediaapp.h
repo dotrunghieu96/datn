@@ -51,11 +51,16 @@ private:
     QString getAlbumArt(QUrl url);
 
 private:
+    //Khối điều khiển phát audio
     MyAudioPlayer *m_audioPlayer = nullptr;
+
+    //Khối điều khiển phát video
     PlaylistModel *m_allAudios = nullptr;
+
+    //Danh sách phát nội dung video
     VideoPlaylistModel *m_allVideos = nullptr;
 
-    //Info of last playback
+    //Thông tin về nội dung được phat gần nhất
     MediaPlaybackInfo *m_mediaPlaybackInfo = nullptr;
 };
 

@@ -5,7 +5,6 @@
 #include <QString>
 #include <QDebug>
 #include <QFileInfo>
-#include "mediadir.h"
 
 class MediaPlaybackInfo : public QObject
 {

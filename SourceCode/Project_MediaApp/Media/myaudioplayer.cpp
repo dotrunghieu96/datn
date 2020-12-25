@@ -15,7 +15,7 @@ MyAudioPlayer::MyAudioPlayer(QObject *parent) : QObject(parent)
     QObject::connect(m_player, &QMediaPlayer::currentMediaChanged,
                      this, &MyAudioPlayer::mediaChangedHandler);
 
-    m_playbackMode = SEQUENCE;
+    m_playbackMode = REPEAT_ALL;
 }
 
 void MyAudioPlayer::switchPlaybackMode()
@@ -97,12 +97,13 @@ void MyAudioPlayer::previous()
     {
         qint64 currentPos = m_player->position();
         m_player->stop();
-        if (m_playbackMode == REPEAT_ONE) {
-            m_player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
-            setPlaybackMode(REPEAT_ALL);
-        }
+
         if (currentPos <= 3000)
         {
+            if (m_playbackMode == REPEAT_ONE) {
+                m_player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
+                setPlaybackMode(REPEAT_ALL);
+            }
             if (m_player->playlist()->currentIndex() == 0)
             {
                 m_player->playlist()->setCurrentIndex(m_player->playlist()->mediaCount() - 1);

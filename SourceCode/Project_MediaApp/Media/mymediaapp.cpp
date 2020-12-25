@@ -155,13 +155,22 @@ void MyMediaApp::addToAudioPlaylist(const QList<QUrl> &urls)
     {
         QUrl url = urls.at(i);
         QString title = "";
-        QString singer = "";
+        QString singer = "Unknown Artist";
 
         {
             FileRef f(url.toString().replace("file:///","").toStdString().c_str());
             Tag *tag = f.tag();
-            title = QString::fromWCharArray(tag->title().toCWString());
-            singer = QString::fromWCharArray(tag->artist().toCWString());
+            if (tag->title().length() > 0)
+            {
+                title = QString::fromWCharArray(tag->title().toCWString());
+            }
+            else {
+                title = f.file()->name();
+            }
+            if (tag->artist().length() > 0)
+            {
+                singer = QString::fromWCharArray(tag->artist().toCWString());
+            }
         }
 
         Song song(title,
