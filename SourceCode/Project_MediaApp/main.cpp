@@ -3,7 +3,6 @@
 #include "Media/mymediaapp.h"
 #include <QDebug>
 #include <QQmlContext>
-#include <QFileSystemModel>
 
 int main(int argc, char *argv[])
 {

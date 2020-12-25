@@ -1,4 +1,4 @@
-QT += quick core multimedia widgets
+QT += quick core multimedia
 
 CONFIG += c++11
 
@@ -48,10 +48,10 @@ HEADERS += \
     Media/video.h \
     Media/videoplaylistmodel.h
 
-unix|win32: LIBS += -LC:/Libraries/taglib/lib/ -ltag
+unix|win32: LIBS += -L$$PWD/Libs/taglib/lib/ -ltag
 
-INCLUDEPATH += C:/Libraries/taglib/include
-DEPENDPATH += C:/Libraries/taglib/include
+INCLUDEPATH += $$PWD/Libs/taglib/include
+DEPENDPATH += $$PWD/Libs/taglib/include
 
-win32:!win32-g++: PRE_TARGETDEPS += C:/Libraries/taglib/lib/tag.lib
-else:unix|win32-g++: PRE_TARGETDEPS += C:/Libraries/taglib/lib/libtag.a
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/Libs/taglib/lib/tag.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/Libs/taglib/lib/libtag.a
