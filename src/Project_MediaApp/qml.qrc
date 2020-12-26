@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Resources/album_art.png</file>
+        <file>Resources/next_focus.png</file>
+        <file>Resources/next_idle.png</file>
+        <file>Resources/pause_focus.png</file>
+        <file>Resources/pause_idle.png</file>
+        <file>Resources/play_focus.png</file>
+        <file>Resources/play_idle.png</file>
+        <file>Resources/prev_focus.png</file>
+        <file>Resources/prev_idle.png</file>
+        <file>Resources/repeat_all_focus.png</file>
+        <file>Resources/repeat_all_idle.png</file>
+        <file>Resources/repeat_none_focus.png</file>
+        <file>Resources/repeat_none_idle.png</file>
+        <file>Resources/repeat_one_focus.png</file>
+        <file>Resources/repeat_one_idle.png</file>
+        <file>Resources/background.jpg</file>
+        <file>Resources/playlist_focus.png</file>
+        <file>Resources/playlist_idle.png</file>
+        <file>Resources/video_state_pause.png</file>
+        <file>Qml/AudioApp.qml</file>
+        <file>Qml/MyButton.qml</file>
+        <file>Qml/VideoApp.qml</file>
+        <file>Qml/VideoPlayer.qml</file>
+        <file>Resources/video_thumbnail.jpg</file>
+        <file>Resources/loader.png</file>
+        <file>Qml/DateTimeWidget.qml</file>
+        <file>Resources/replay_focus.png</file>
+        <file>Resources/replay_idle.png</file>
+        <file>Qml/AudioWidget.qml</file>
+        <file>Resources/video-icon.png</file>
+    </qresource>
+</RCC>
