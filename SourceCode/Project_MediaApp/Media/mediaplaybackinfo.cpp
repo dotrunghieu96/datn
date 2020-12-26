@@ -1,6 +1,10 @@
 #include "mediaplaybackinfo.h"
 
-MediaPlaybackInfo::MediaPlaybackInfo(QString lastVideoSource, quint8 lastVideoPosition, QString lastAudioSource, QString secLastVideoSource)
+MediaPlaybackInfo::MediaPlaybackInfo(
+        QString lastVideoSource,
+        quint8 lastVideoPosition,
+        QString lastAudioSource,
+        QString secLastVideoSource)
 {
     m_lastVideoSource = lastVideoSource;
     m_lastVideoPosition = lastVideoPosition;

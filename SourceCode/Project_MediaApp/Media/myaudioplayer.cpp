@@ -209,26 +209,26 @@ QString MyAudioPlayer::getTimeString(qint64 miliseconds)
 
 void MyAudioPlayer::mediaChangedHandler()
 {
-    bool triggerAnimationDirection = true;
+    bool isNext = true;
     if (m_playlist->mediaCount() > 0)
     {
         if ((m_playlist->currentIndex() - m_nowPlayingIndex == 1)
                 || ((m_playlist->currentIndex() == 0)
                     && (m_nowPlayingIndex == m_playlist->mediaCount() - 1)))
         {
-            triggerAnimationDirection = true;
+            isNext = true;
         }
         else if ((m_playlist->currentIndex() - m_nowPlayingIndex == -1)
                  || ((m_playlist->currentIndex() == m_playlist->mediaCount() - 1)
                      && (m_nowPlayingIndex == 0)))
         {
-            triggerAnimationDirection = false;
+            isNext = false;
         }
         else {
             //do nothing
         }
         m_nowPlayingIndex = m_playlist->currentIndex();
-        emit triggerAnimation(triggerAnimationDirection);
+        emit nexted(isNext);
     }
     else
     {

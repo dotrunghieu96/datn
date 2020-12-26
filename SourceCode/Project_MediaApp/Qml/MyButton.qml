@@ -12,6 +12,18 @@ Item {
         height: 48
         radius: 24
 
+        Text {
+            anchors.fill: parent
+            text: buttonText
+
+            color: "white"
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+
+            font.family: root.font.family
+            font.pixelSize: 20
+        }
+
         background: Rectangle {
             id: bg
             anchors.fill: parent
@@ -20,25 +32,16 @@ Item {
             border.width: 2
             color: "transparent"
 
-            Text {
-                anchors.fill: parent
-                text: buttonText
-
-                color: "white"
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-
-                font.family: root.font.family
-                font.pixelSize: 20
-            }
         }
 
         onPressed: {
-            bg.color = "gray"
+            bg.color = "lightgray"
+            bg.opacity = 0.5
         }
 
         onReleased: {
             bg.color = "transparent"
+            bg.opacity = 1
         }
 
         onClicked: {

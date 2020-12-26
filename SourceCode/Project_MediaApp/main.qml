@@ -56,9 +56,8 @@ Window {
 
             AudioWidget {
                 id: audioWidget
-                anchors.left: parent.left
-                anchors.leftMargin: 86
-                anchors.verticalCenter: parent.verticalCenter
+                x: 20
+                y: 72
                 onOpenApp: {
                     stackView.push(audioApp)
                 }
@@ -66,23 +65,66 @@ Window {
 
             Rectangle {
                 id: videoWidget
-                anchors.right: parent.right
-                anchors.rightMargin: 86
-                width: 512
-                height: width
-                anchors.verticalCenter: parent.verticalCenter
-                color: "lightsteelblue"
-                Text {
-                    anchors.centerIn: parent
-                    text: "open VideoApp"
-                }
+                width: 600
+                height: 216
 
-                border.color: "green"
+                anchors.left: audioWidget.left
+                anchors.top: audioWidget.bottom
+                anchors.topMargin: 40
+                color: "transparent"
+//                border.color: "green"
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         stackView.push(videoApp)
                     }
+                }
+
+                Image {
+                    id: videoIcon
+
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    height: parent.height
+//                    width: height
+//                    clip: true
+                    fillMode: Image.PreserveAspectFit
+
+                    source: "qrc:/Resources/video-icon.png"
+
+//                    OpacityMask {
+//                        source: mask
+//                        maskSource: albumArt
+//                    }
+
+
+                }
+
+                LinearGradient {
+                    id: mask
+                    anchors.fill: parent
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: "transparent"}
+                        GradientStop { position: 1.0; color: "black" }
+                    }
+                }
+
+                Text {
+                    id: videoButtonTitle
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 8
+                    anchors.left: videoIcon.right
+                    anchors.leftMargin: 16
+
+                    text: "Video Player"
+                    clip: true
+
+                    font.family: "Helvetica"
+                    font.bold: true
+                    font.pixelSize: 32
+                    fontSizeMode: Text.Fit
+        //            wrapMode: Text.WordWrap
+                    color: "white"
                 }
             }
         }

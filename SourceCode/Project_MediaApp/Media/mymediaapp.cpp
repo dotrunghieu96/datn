@@ -165,7 +165,8 @@ void MyMediaApp::addToAudioPlaylist(const QList<QUrl> &urls)
                 title = QString::fromWCharArray(tag->title().toCWString());
             }
             else {
-                title = f.file()->name();
+                QFileInfo info(url.toDisplayString());
+                title = info.baseName();
             }
             if (tag->artist().length() > 0)
             {

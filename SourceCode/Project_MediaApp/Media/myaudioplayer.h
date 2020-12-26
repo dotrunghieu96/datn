@@ -44,7 +44,7 @@ signals:
     void positionChanged(qint64 position);
     void mediaAvailableChanged(bool mediaAvailable);
     void isPlayingChanged(bool isPlaying);
-    void triggerAnimation(bool isIncreased);
+    void nexted(bool isNext);
 
 public slots:
     void setMedia(const int &index);

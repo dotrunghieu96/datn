@@ -233,8 +233,8 @@ Item {
 
         Connections {
             target: audioPlayer
-            onTriggerAnimation:{
-                if (isIncreased)
+            onNexted:{
+                if (isNext)
                 {
                     pathView.incrementCurrentIndex()
                 }
