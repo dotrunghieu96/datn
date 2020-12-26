@@ -3,4 +3,4 @@ Environment:
 - Framework: Qt Framework v5.12
 
 
-Open "Project3_MediaApp.pro" to open project
+Open "Project_MediaApp.pro" to open project
